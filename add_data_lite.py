@@ -1,22 +1,19 @@
 import os
 import pandas as pd
-import mssql.connector as mssql
-from mssql.connector import Error
+import sqlite3
+from sqlite3 import Error
 
 def DBConnect(dbName=None):
     """
-
     Parameters
     ----------
     dbName :
-        Default value = None)
+        Default value = None
 
     Returns
     -------
-
     """
-    conn = mysql.connect(host='localhost', user='root', password=os.getenv('mysqlPass'),
-                         database=dbName, buffered=True)
+    conn = sqlite3.connect('task5.sqlite')
     cur = conn.cursor()
     return conn, cur
 
