@@ -9,12 +9,13 @@ def DBConnect(dbName=None):
     ----------
     dbName :
         Default value = None
+        string : the database name
 
-    Returns
+    Returns :
+        sqlite.connection : the database connection
     -------
     """
-    conn = sqlite3.connect('tweets.sqlite')
-    #cur = conn.cursor()
+    conn = sqlite3.connect(dbName)
     print(conn)
     return conn
 
@@ -24,63 +25,31 @@ def emojiDB(dbName: str) -> None:
     cur.execute(dbQuery)
     conn.commit()
 
-def createTables(connection: sqlite3.Connection) -> None:
+def execute_query(connection: sqlite3.Connection, query:str) -> None:
+    """
+    Parameters
+    ----------
+    connection :
+        sqlite3.Connection : the database connection
+    query :
+        string : the query string
+    Returns :
+    -------
+    return : nothing
+    """
+
     cursor = connection.cursor()
-    
-    sqlFile = 'day5_schema.sql'
-    fd = open(sqlFile, 'r')
-    query = fd.read()
+    fd = open(query, 'r')
+    sql_query = fd.read()
     fd.close()
 
     try:
-        cursor.execute(query)
+        cursor.execute(sql_query)
         connection.commit()
         print("Query executed successfully")
     except Error as e:
         print(f"The error '{e}' occurred")
 
-    #for command in readSqlFile:
-        """
-        try:
-            res = cursor.execute(command)
-        except Exception as ex:
-            print("Command skipped: ", command)
-            print(ex)
-    conn.commit()
-    cur.close()
-
-    """
-
-    """
-    Parameters
-    ----------
-    dbName :
-        str:
-    dbName :
-        str:
-    dbName:str :
-    Returns
-    -------
-
-    conn, cur = DBConnect(dbName)
-    sqlFile = 'day5_schema.sql'
-    fd = open(sqlFile, 'r')
-    readSqlFile = fd.read()
-    fd.close()
-
-    sqlCommands = readSqlFile.split(';')
-
-    for command in sqlCommands:
-        try:
-            res = cur.execute(command)
-        except Exception as ex:
-            print("Command skipped: ", command)
-            print(ex)
-    conn.commit()
-    cur.close()
-
-    return
-    """
 def preprocess_df(df: pd.DataFrame) -> pd.DataFrame:
     """
 
@@ -105,7 +74,6 @@ def preprocess_df(df: pd.DataFrame) -> pd.DataFrame:
         print("Error:", e)
 
     return df
-
 
 def insert_to_tweet_table(dbName: str, df: pd.DataFrame, table_name: str) -> None:
     """
@@ -212,8 +180,8 @@ if __name__ == "__main__":
     #emojiDB(dbName='tweets.sqlite')
 
     #createTables(dbName='tweets.sqlite')
-    createTables(connection=connection)
+    execute_query(connection=connection, query='create_table.sql')
 
-    #df = pd.read_csv('fintech.csv')
+    df = pd.read_csv('processed_tweet_data.csv')
 
     #insert_to_tweet_table(dbName='tweets', df=df, table_name='TweetInformation')
