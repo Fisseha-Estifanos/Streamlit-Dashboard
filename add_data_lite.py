@@ -99,7 +99,7 @@ def insert_to_tweet_table(connection: sqlite3.Connection, df: pd.DataFrame, tabl
         try:
             cur = connection.cursor()
             # Execute the SQL command
-            execute_query(cur.execute(sqlQuery, data))
+            cur.execute(sqlQuery, data)
             # Commit your changes in the database
             connection.commit()
             print("Data Inserted Successfully")

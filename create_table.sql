@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS TweetInformation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    statuses_count INTEGER NOT NULL,
+    statuses_count INTEGER  NULL,
     created_at TEXT NOT NULL,
-    source TEXT NOT NULL,
+    source TEXT  NULL,
     original_text TEXT DEFAULT NULL,
     polarity FLOAT DEFAULT NULL,
     subjectivity FLOAT DEFAULT NULL,
@@ -14,6 +14,6 @@ CREATE TABLE IF NOT EXISTS TweetInformation (
     possibly_sensitive TEXT DEFAULT NULL,
     hashtags TEXT DEFAULT NULL,
     user_mentions TEXT DEFAULT NULL,
-    location TEXT NOT NULL,
-    language TEXT DEFAULT NULL,
+    location TEXT  NULL,
+    language TEXT DEFAULT NULL
 );
