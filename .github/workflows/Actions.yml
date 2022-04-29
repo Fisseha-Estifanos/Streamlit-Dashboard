@@ -1,0 +1,9 @@
+name: GitHub Actions
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:    
+      - name: setup the requirements
+        uses: actions/checkout@v3
+      - run: pip install -r requirements.txt
