@@ -13,9 +13,10 @@ def DBConnect(dbName=None):
     Returns
     -------
     """
-    conn = sqlite3.connect('task5.sqlite')
-    cur = conn.cursor()
-    return conn, cur
+    conn = sqlite3.connect('tweets.sqlite')
+    #cur = conn.cursor()
+    print(conn)
+    return conn
 
 def emojiDB(dbName: str) -> None:
     conn, cur = DBConnect(dbName)
@@ -23,30 +24,34 @@ def emojiDB(dbName: str) -> None:
     cur.execute(dbQuery)
     conn.commit()
 
-def createDB(dbName: str) -> None:
-    """
+def createTables(connection: sqlite3.Connection) -> None:
+    cursor = connection.cursor()
+    
+    sqlFile = 'day5_schema.sql'
+    fd = open(sqlFile, 'r')
+    query = fd.read()
+    fd.close()
 
-    Parameters
-    ----------
-    dbName :
-        str:
-    dbName :
-        str:
-    dbName:str :
+    try:
+        cursor.execute(query)
+        connection.commit()
+        print("Query executed successfully")
+    except Error as e:
+        print(f"The error '{e}' occurred")
 
-
-    Returns
-    -------
-
-    """
-    conn, cur = DBConnect()
-    cur.execute(f"CREATE DATABASE IF NOT EXISTS {dbName};")
+    #for command in readSqlFile:
+        """
+        try:
+            res = cursor.execute(command)
+        except Exception as ex:
+            print("Command skipped: ", command)
+            print(ex)
     conn.commit()
     cur.close()
 
-def createTables(dbName: str) -> None:
     """
 
+    """
     Parameters
     ----------
     dbName :
@@ -54,12 +59,9 @@ def createTables(dbName: str) -> None:
     dbName :
         str:
     dbName:str :
-
-
     Returns
     -------
 
-    """
     conn, cur = DBConnect(dbName)
     sqlFile = 'day5_schema.sql'
     fd = open(sqlFile, 'r')
@@ -78,7 +80,7 @@ def createTables(dbName: str) -> None:
     cur.close()
 
     return
-
+    """
 def preprocess_df(df: pd.DataFrame) -> pd.DataFrame:
     """
 
@@ -204,10 +206,14 @@ def db_execute_fetch(*args, many=False, tablename='', rdf=True, **kwargs) -> pd.
 
 
 if __name__ == "__main__":
-    createDB(dbName='tweets')
-    emojiDB(dbName='tweets')
-    createTables(dbName='tweets')
+    #createDB(dbName='tweets.sqlite')
+    connection = DBConnect(dbName='tweets.sqlite')
 
-    df = pd.read_csv('fintech.csv')
+    #emojiDB(dbName='tweets.sqlite')
 
-    insert_to_tweet_table(dbName='tweets', df=df, table_name='TweetInformation')
+    #createTables(dbName='tweets.sqlite')
+    createTables(connection=connection)
+
+    #df = pd.read_csv('fintech.csv')
+
+    #insert_to_tweet_table(dbName='tweets', df=df, table_name='TweetInformation')
