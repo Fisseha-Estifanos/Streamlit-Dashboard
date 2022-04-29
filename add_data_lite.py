@@ -175,7 +175,7 @@ def db_execute_fetch(*args, many=False, tablename='', rdf=True, **kwargs) -> pd.
 
 if __name__ == "__main__":
     #createDB(dbName='tweets.sqlite')
-    connection = DBConnect(dbName='tweets.sqlite')
+    connection = DBConnect(dbName='tweets.db')
 
     #emojiDB(dbName='tweets.sqlite')
 
