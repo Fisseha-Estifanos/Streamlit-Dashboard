@@ -108,7 +108,8 @@ def insert_to_tweet_table(connection: sqlite3.Connection, df: pd.DataFrame, tabl
             print("Error: ", e)
     return
 
-def db_execute_fetch(*args, many=False, tablename='', rdf=True, **kwargs) -> pd.DataFrame:
+#def db_execute_fetch(*args, many=False, tablename='', rdf=True, **kwargs) -> pd.DataFrame:
+def db_execute_fetch(connection:sqlite3.Connection, selection_query : str, dbName : str, rdf=True, many = False) -> pd.DataFrame:
     """
 
     Parameters
@@ -127,43 +128,39 @@ def db_execute_fetch(*args, many=False, tablename='', rdf=True, **kwargs) -> pd.
     Returns
     -------
 
-    """
-    connection, cursor1 = DBConnect(**kwargs)
-    if many:
-        cursor1.executemany(*args)
-    else:
-        cursor1.execute(*args)
+    """   
+    
+    cursor1 = connection.cursor()
+    result = None
+    try:
+        cursor1.execute(selection_query)
+        result = cursor1.fetchall()
+    except Error as e:
+        print(f"The error '{e}' occurred")
 
+    #print(result[0], end="\n\n")
     # get column names
     field_names = [i[0] for i in cursor1.description]
-
-    # get column values
-    res = cursor1.fetchall()
-
-    # get row count and show info
-    nrow = cursor1.rowcount
-    if tablename:
-        print(f"{nrow} recrods fetched from {tablename} table")
 
     cursor1.close()
     connection.close()
 
     # return result
     if rdf:
-        return pd.DataFrame(res, columns=field_names)
+        return pd.DataFrame(result, columns=field_names)
     else:
-        return res
+        return result
 
 
 if __name__ == "__main__":
-    #createDB(dbName='tweets.sqlite')
     connection = DBConnect(dbName='tweets.db')
-
-    #emojiDB(dbName='tweets.sqlite')
-
-    #createTables(dbName='tweets.sqlite')
     execute_query(connection=connection, query='create_table.sql')
 
     df = pd.read_csv('processed_tweet_data.csv')
+    sample_df = df[:10].copy()
 
-    insert_to_tweet_table(connection=connection, df=df, table_name='TweetInformation')
+    #insert_to_tweet_table(connection=connection, df=sample_df, table_name='TweetInformation')
+
+    select_query = "select * from TweetInformation"
+    returned_df = db_execute_fetch(connection, select_query, dbName="tweets.db", rdf=True)
+    returned_df.info()
