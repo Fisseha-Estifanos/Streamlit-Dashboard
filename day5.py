@@ -79,7 +79,7 @@ def langPie():
     fig = px.pie(dfLangCount, values='Tweet_count', names='language', width=500, height=350)
     fig.update_traces(textposition='inside', textinfo='percent+label')
 
-    colB1, colB2 = st.beta_columns([2.5, 1])
+    colB1, colB2 = st.columns([2.5, 1])
 
     with colB1:
         st.plotly_chart(fig)
@@ -93,7 +93,7 @@ st.markdown("<p style='padding:10px; background-color:#000000;color:#00ECB9;font
 selectLocAndAuth()
 st.title("Data Visualizations")
 wordCloud()
-with st.beta_expander("Show More Graphs"):
+with st.expander("Show More Graphs"):
     stBarChart()
     langPie()
 
