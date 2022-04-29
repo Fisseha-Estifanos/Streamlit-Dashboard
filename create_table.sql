@@ -17,6 +17,3 @@ CREATE TABLE IF NOT EXISTS TweetInformation (
     location TEXT NOT NULL,
     language TEXT DEFAULT NULL,
 );
-
---statuses_count,created_at,source,original_text,polarity,subjectivity,favorite_count,retweet_count,screen_name,followers_count,friends_count,possibly_sensitive,hashtags,user_mentions,location,language
-
