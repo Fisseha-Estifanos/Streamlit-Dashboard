@@ -75,54 +75,36 @@ def preprocess_df(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-def insert_to_tweet_table(dbName: str, df: pd.DataFrame, table_name: str) -> None:
+def insert_to_tweet_table(connection: sqlite3.Connection, df: pd.DataFrame, table_name: str) -> None:
     """
-
     Parameters
     ----------
-    dbName :
-        str:
+    connection :
+        sqlite3.Connection : the database connection
     df :
-        pd.DataFrame:
+        pd.DataFrame : the dataframe
     table_name :
-        str:
-    dbName :
-        str:
-    df :
-        pd.DataFrame:
-    table_name :
-        str:
-    dbName:str :
-
-    df:pd.DataFrame :
-
-    table_name:str :
-
-
-    Returns
+        str : the tablename
+    Returns :
+        nothing
     -------
-
     """
-    conn, cur = DBConnect(dbName)
-
-    df = preprocess_df(df)
-
     for _, row in df.iterrows():
-        sqlQuery = f"""INSERT INTO {table_name} (created_at, source, clean_text, polarity, subjectivity, language,
-                    favorite_count, retweet_count, original_author, screen_count, followers_count, friends_count,
-                    hashtags, user_mentions, place, place_coordinate)
-             VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
+        sqlQuery = f"""INSERT INTO {table_name} (statuses_count, created_at, source, original_text, polarity,
+        subjectivity, favorite_count, retweet_count, screen_name, followers_count, friends_count, possibly_sensitive, hashtags, user_mentions, location,language)
+             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
         data = (row[0], row[1], row[2], row[3], (row[4]), (row[5]), row[6], row[7], row[8], row[9], row[10], row[11],
                 row[12], row[13], row[14], row[15])
 
         try:
+            cur = connection.cursor()
             # Execute the SQL command
-            cur.execute(sqlQuery, data)
+            execute_query(cur.execute(sqlQuery, data))
             # Commit your changes in the database
-            conn.commit()
+            connection.commit()
             print("Data Inserted Successfully")
         except Exception as e:
-            conn.rollback()
+            connection.rollback()
             print("Error: ", e)
     return
 
@@ -184,4 +166,4 @@ if __name__ == "__main__":
 
     df = pd.read_csv('processed_tweet_data.csv')
 
-    #insert_to_tweet_table(dbName='tweets', df=df, table_name='TweetInformation')
+    insert_to_tweet_table(connection=connection, df=df, table_name='TweetInformation')
